@@ -1,0 +1,31 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Tenstays
+
+//@version=5
+indicator("grid", overlay=true, max_lines_count=500, max_boxes_count=500)
+
+  
+major_grid_colour = input.color(title="", defval=color.new(color.white, 30), inline="major")
+starting_point = input.float(title="", defval=15000, inline="major")
+color grid_line_colour = color.black
+
+
+float grid_steps = switch syminfo.ticker
+    "XAUUSD" => float(1)
+    "NAS100" => float(10)
+    "NAS100USD" => float(10)
+    "EURUSD" => float(0.00010)
+
+
+create_grid(initial_point) =>
+    float increment = (grid_steps * 2)
+    float position = (initial_point - initial_point % (grid_steps * 10))
+    int max = 500
+
+    for i=1 to max
+        line.new(bar_index, position, bar_index-1, position, extend=extend.both, color=major_grid_colour, width=2)
+        position += grid_steps * 10
+    
+
+if barstate.islast
+    create_grid(starting_point)
